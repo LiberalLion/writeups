@@ -32,7 +32,7 @@ pipes = {
 
 
 if len(sys.argv) != 2:
-	print("{} <ip>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -41,10 +41,10 @@ conn = MYSMB(target)
 try:
 	conn.login(USERNAME, PASSWORD)
 except smb.SessionError as e:
-	print('Login failed: ' + nt_errors.ERROR_MESSAGES[e.error_code][0])
+	print(f'Login failed: {nt_errors.ERROR_MESSAGES[e.error_code][0]}')
 	sys.exit()
 finally:
-	print('Target OS: ' + conn.get_server_os())
+	print(f'Target OS: {conn.get_server_os()}')
 
 tid = conn.tree_connect_andx('\\\\'+target+'\\'+'IPC$')
 conn.set_default_tid(tid)
@@ -69,17 +69,17 @@ for pipe_name, pipe_uuid in pipes.items():
 		dce.connect()
 		try:
 			dce.bind(pipe_uuid, transfer_syntax=NDR64Syntax)
-			print('{}: Ok (64 bit)'.format(pipe_name))
+			print(f'{pipe_name}: Ok (64 bit)')
 		except DCERPCException as e:
 			if 'transfer_syntaxes_not_supported' in str(e):
-				print('{}: Ok (32 bit)'.format(pipe_name))
+				print(f'{pipe_name}: Ok (32 bit)')
 			else:
-				print('{}: Ok ({})'.format(pipe_name, str(e)))
+				print(f'{pipe_name}: Ok ({str(e)})')
 		dce.disconnect()
 	except smb.SessionError as e:
-		print('{}: {}'.format(pipe_name, nt_errors.ERROR_MESSAGES[e.error_code][0]))
+		print(f'{pipe_name}: {nt_errors.ERROR_MESSAGES[e.error_code][0]}')
 	except smbconnection.SessionError as e:
-		print('{}: {}'.format(pipe_name, nt_errors.ERROR_MESSAGES[e.error][0]))
+		print(f'{pipe_name}: {nt_errors.ERROR_MESSAGES[e.error][0]}')
 
 
 conn.disconnect_tree(tid)

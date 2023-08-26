@@ -11,7 +11,7 @@ USERNAME = ''
 PASSWORD = ''
 
 if len(sys.argv) != 3:
-	print("{} <ip> <pipe_name>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip> <pipe_name>")
 	sys.exit(1)
 
 target = sys.argv[1]

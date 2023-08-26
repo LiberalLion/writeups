@@ -72,8 +72,16 @@ def header():
     RS   = Style.RESET_ALL
     FR   = Fore.RESET
     SIG  = BL+'            /\\\n'+RS
-    SIG += Fore.YELLOW+'/vvvvvvvvvvvv '+BL+'\\'+FR+'--------------------------------------,\n'
-    SIG += Fore.YELLOW+'`^^^^^^^^^^^^'+BL+' /'+FR+'============'+Fore.RED+'BOKU'+FR+'====================="\n'
+    SIG += (
+        f'{Fore.YELLOW}/vvvvvvvvvvvv {BL}'
+        + '\\'
+        + FR
+        + '--------------------------------------,\n'
+    )
+    SIG += (
+        f'{Fore.YELLOW}`^^^^^^^^^^^^{BL} /{FR}============{Fore.RED}BOKU{FR}'
+        + '====================="\n'
+    )
     SIG += BL+'            \/'+RS+'\n'
     return SIG
 

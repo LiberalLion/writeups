@@ -12,7 +12,7 @@ Note: The PoC does not support user authentication
 
 
 if len(sys.argv) != 2:
-	print("{} <ip>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -27,7 +27,7 @@ flags2 &= ~smb.SMB.FLAGS2_EXTENDED_SECURITY
 # if not use unicode, buffer size on target machine is doubled because converting ascii to utf16
 flags2 |= smb.SMB.FLAGS2_UNICODE
 conn.set_flags(flags2=flags2)
-	
+
 pkt = smb.NewSMBPacket()
 
 sessionSetup = smb.SMBCommand(smb.SMB.SMB_COM_SESSION_SETUP_ANDX)

